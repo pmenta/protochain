@@ -1,12 +1,12 @@
-import { IBlock } from "../../domain";
+import { BlockValidationInput, IBlock } from "../../domain";
 import { createHash } from "crypto";
 
 /**
  * Block class
  */
 export class Block implements IBlock {
-  hash: string;
-  timestamp: number = Date.now();
+  readonly hash: string;
+  readonly timestamp: number = Date.now();
 
   /**
    * Creates a new Block
@@ -22,13 +22,18 @@ export class Block implements IBlock {
     this.hash = this.getHash();
   }
 
-  getHash(): string {
+  private getHash(): string {
     return createHash("sha256")
       .update(`${this.index}${this.data}${this.timestamp}${this.previousHash}`)
       .digest("hex");
   }
 
-  isValid(): boolean {
-    return this.index >= 0 && !!this.hash;
+  isValid(input: BlockValidationInput): boolean {
+    if (this.index < 0) return false;
+    if (!this.data) return false;
+    if (input.previousHash !== this.previousHash) return false;
+    if (input.previousIndex !== this.index - 1) return false;
+
+    return true;
   }
 }
