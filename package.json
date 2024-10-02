@@ -2,6 +2,9 @@
   "name": "protochain",
   "module": "src/index.ts",
   "type": "module",
+  "scripts": {
+    "test:watch": "vitest --coverage"
+  },
   "devDependencies": {
     "bun-types": "latest",
     "vitest": "^2.1.1"
